@@ -7,9 +7,9 @@ plugins {
 }
 
 group 'net.prismclient'
-version '1.0-Production'
+version '1.1.1-dev'
 
-project.ext.lwjglVersion = "3.3.1"
+project.ext.lwjglVersion = "3.2.2"
 switch (OperatingSystem.current()) {
     case OperatingSystem.LINUX:
         def osArch = System.getProperty("os.arch")
@@ -63,12 +63,20 @@ compileKotlin {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Firefight/Aether-UI"
+            credentials {
+                username = System.getenv("GH_USERNAME")
+                password = System.getenv("GH_TOKEN")
+            }
+        }
+    }
     publications {
         maven(MavenPublication) {
-            groupId = 'com.github.Prism-Client'
-            artifactId = 'Aether-UI'
-            version = '0.1-release'
-            from components.kotlin
+            artifactId = 'aether-ui'
+            from components.java
         }
     }
 }
