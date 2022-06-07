@@ -7,8 +7,8 @@ import net.prismclient.aether.ui.component.util.enums.UIAlignment
 import net.prismclient.aether.ui.renderer.UIRenderer
 import net.prismclient.aether.ui.renderer.impl.font.UIFont
 import net.prismclient.aether.ui.style.UIStyleSheet
-import net.prismclient.aether.ui.util.interfaces.UIDependable
 import net.prismclient.aether.ui.util.extensions.*
+import net.prismclient.aether.ui.util.interfaces.UIDependable
 
 /**
  * An example of [UIDependable] which has component styles setup
@@ -21,7 +21,7 @@ class ComponentStyles : UIDependable() {
             size(380f, 100f)
             background(asRGBA(0, 0, 0, 0.3f), radius(15f))
 
-            margin(10f)
+//            margin(10f)
 
             font {
                 align(UIAlignment.CENTER)
@@ -37,8 +37,8 @@ class ComponentStyles : UIDependable() {
             sliderControl.color = -1
 
             background {
-                radius = radius(2.5f)
-                color = asRGBA(255, 255, 255, 0.3f)
+                radius(2.5f)
+                backgroundColor = asRGBA(255, 255, 255, 0.3f)
                 border {
                     borderWidth = 1f
                     borderColor = asRGBA(255, 255, 255, 0.75f)
@@ -48,14 +48,6 @@ class ComponentStyles : UIDependable() {
 
         /** Container w Scrollbar **/
         style(UIContainerSheet(), "container") {
-            control(UIAlignment.CENTER)
-            background(asRGBA(0, 0, 0, 0.3f)) {
-                radius = radius(15f)
-            }
-            contentRadius = radius(15f)
-
-            width = px(400)
-            height = px(400)
 
             verticalScrollbar {
                 x = rel(1f) - px(10) - px(5)
@@ -67,7 +59,7 @@ class ComponentStyles : UIDependable() {
                 color = -1
 
                 background(asRGBA(0, 0, 0, 0.3f)) {
-                    radius = radius(2.5f)
+                    radius(2.5f)
                 }
             }
 
@@ -82,7 +74,7 @@ class ComponentStyles : UIDependable() {
                 color = -1
 
                 background(asRGBA(0, 0, 0, 0.3f)) {
-                    radius = radius(2.5f)
+                    radius(2.5f)
                 }
             }
         }
@@ -91,7 +83,15 @@ class ComponentStyles : UIDependable() {
         style(UIImageSheet(), "imag") {
             width = px(200f)
             height = px(200f)
-            imageRadius = radius(25f)
+        }
+
+        // Icon Image
+        style(UIImageSheet(), "icon") {
+            anchor(UIAlignment.MIDDLELEFT)
+            //align(UIAlignment.MIDDLELEFT) // TODO: Debug why this is not updating to it's parent
+            size(24f, 24f)
+            margin(marginLeft = 16f, marginTop = 23f + 4f)
+            imageColor = -1
         }
     }
 }

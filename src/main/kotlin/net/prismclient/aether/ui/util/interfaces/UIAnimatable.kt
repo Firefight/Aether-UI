@@ -1,7 +1,5 @@
 package net.prismclient.aether.ui.util.interfaces
 
-import net.prismclient.aether.ui.animation.ease.UIEase
-import net.prismclient.aether.ui.animation.util.UIAnimationResult
 import net.prismclient.aether.ui.component.UIComponent
 
 /**
@@ -47,6 +45,14 @@ interface UIAnimatable<T> {
      * @see <a href="https://github.com/Prism-Client/Aether-UI/blob/production/docs/Animation.md#understanding-the-animation-implementation">Understanding the animation implementation</a>
      *
      * @param component This parameter is option and can be null depending on the needs of the [UIAnimatable]
+     * @see updateAnimationCache
+     * @see clearAnimationCache
      */
     fun animate(previous: T?, current: T?, progress: Float, component: UIComponent<*>)
+
+    /**
+     * Invoked when the animation with this keyframe is updated. If the parameter [saveState]
+     * is true, then [component] should be the value, else the cached value should be the value
+     */
+    fun saveState(component: UIComponent<*>, keyframe: T?, retain: Boolean)
 }

@@ -19,13 +19,19 @@ open class UIListLayout @JvmOverloads constructor(
 ) : UIContainer<UIContainerSheet>(style) {
 
     override fun updateLayout() {
-        var x = 0f
-        var y = 0f
+        var x = if (style.clipContent) 0f else x
+        var y = if (style.clipContent) 0f else y
 
         if (listOrientation == Forward) {
             for (i in 0 until components.size) {
                 val component = components[i]
 
+                // Some component's parent might be components within
+                // this list layout. In that case it should update based
+                // on it's parent on not this list layout
+                if (component.parent != this)
+                    continue
+
                 component.overridden = true
 
                 if (listDirection == ListDirection.Vertical) {
@@ -35,12 +41,14 @@ open class UIListLayout @JvmOverloads constructor(
                     component.x = x + component.marginLeft
                     x += component.relWidth + component.marginLeft + component.marginRight
                 }
-                component.update()
             }
         } else {
             for (i in components.size - 1 downTo 0) {
                 val component = components[i]
 
+                if (component.parent != this)
+                    continue
+
                 component.overridden = true
 
                 if (listDirection == ListDirection.Vertical) {
@@ -50,9 +58,11 @@ open class UIListLayout @JvmOverloads constructor(
                     component.x = x + component.marginLeft
                     x += component.relWidth + component.marginLeft + component.marginRight
                 }
-                component.update()
             }
         }
+
+        for (c in components)
+            c.update()
     }
 
     /**

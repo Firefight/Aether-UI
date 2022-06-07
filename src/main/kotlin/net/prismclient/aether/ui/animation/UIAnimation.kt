@@ -6,9 +6,6 @@ import net.prismclient.aether.ui.animation.util.UIAnimationResult
 import net.prismclient.aether.ui.component.UIComponent
 import net.prismclient.aether.ui.style.UIProvider
 import net.prismclient.aether.ui.style.UIStyleSheet
-import net.prismclient.aether.ui.unit.UIUnit
-import net.prismclient.aether.ui.unit.util.INITIAL
-import net.prismclient.aether.ui.util.extensions.isNormal
 import net.prismclient.aether.ui.util.interfaces.UICopy
 import java.util.function.Consumer
 
@@ -33,7 +30,7 @@ class UIAnimation<T : UIStyleSheet>(
         var style: T,
         val name: String,
         var priority: UIAnimationPriority = UIAnimationPriority.NORMAL
-) : UICopy<UIAnimation<T>> {
+) : UICopy<UIAnimation<T>> { // TODO: update cache property
     val lifetime = System.currentTimeMillis()
     val timeline: ArrayList<T> = ArrayList()
 
@@ -57,10 +54,10 @@ class UIAnimation<T : UIStyleSheet>(
         if (timeline.size < 1) {
             println("Timeline must have at least 1 keyframe to start an animation")
             return
-        } //else if (timeline.size == 1) {
-//            timeline.add(timeline[0])
-//            timeline[0] = getStyle()
-//        }
+        } else if (timeline.size == 1) {
+            timeline.add(timeline[0])
+            timeline[0] = style.copy() as T
+        }
 
         animationLength = 0L
         animating = true
@@ -142,9 +139,7 @@ class UIAnimation<T : UIStyleSheet>(
     }
 
     fun saveState(keyframe: T) {
-
-        // TODO: abstract fun saveState(k: T)
-
+        component.style.saveState(component, keyframe, (keyframe.animationResult != UIAnimationResult.Reset))
     }
 
     fun forceComplete() {
@@ -172,7 +167,7 @@ class UIAnimation<T : UIStyleSheet>(
      *
      * @param block The [UIStyleSheet] that adjusts the component's properties.
      */
-    inline fun keyframe(ease: UIEase = UILinear(1000L), keep: Boolean = false, block: T.() -> Unit): T {
+    inline fun keyframe(ease: UIEase = UILinear(1000L), keep: Boolean = true, block: T.() -> Unit): T {
         val sheet: T
         try {
             sheet = style.copy() as T
@@ -189,34 +184,6 @@ class UIAnimation<T : UIStyleSheet>(
 
         return sheet
     }
-
-    protected fun UIUnit?.updateX(x: Float): Float {
-        if (this == null)
-            return x
-        if (this.type.isNormal())
-            return component.calculateUnitX(this, component.getParentWidth(), false)
-        return when (this.type) {
-            INITIAL -> x
-            else -> throw UnsupportedOperationException("${this.type} is not a valid type.")
-        }
-    }
-
-    protected fun UIUnit?.updateY(y: Float): Float {
-        if (this == null)
-            return y
-        if (this.type.isNormal())
-            return component.calculateUnitY(this, component.getParentHeight(), false)
-        return when (this.type) {
-            INITIAL -> y
-            else -> throw UnsupportedOperationException("${this.type} is not a valid type.")
-        }
-    }
-
-    /**
-     * Returns null if type is INITIAL, as a component cannot have it set to that type
-     */
-    protected operator fun UIUnit?.unaryPlus(): UIUnit? =
-            if (this?.type == INITIAL) null else this
 
     fun first(event: Consumer<UIAnimation<T>>) {
         if (onCreationListeners == null)
